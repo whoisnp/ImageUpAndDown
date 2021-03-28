@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Image Upload</title>
+</head>
+<body>
+    <form id="appfrm">
+        Image Name <input type="text" id="name" /> <br /><br />
+    
+        <!-- <button id="select">Select</button> -->
+        <!-- <button id="retrieve">Retrieve</button> -->
+        <!-- <input id="photo" class="form-control-file form-control" type="file" name="avatar-file"
+        accept="image/png, image/jpeg" /> -->
+        <input type="file" name="photo" id="photo">
+        <button id="upload">Upload</button>
+    </form>
+    <section id="ImageList">
+        
+    </section>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-storage.js"></script>
+</body>
+<script>
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+var firebaseConfig = {
+        apiKey: "AIzaSyA_o9RtIdVApKbhm0SaDcX-I7P0SQYep6I",
+        authDomain: "imageupanddown.firebaseapp.com",
+        projectId: "imageupanddown",
+        storageBucket: "imageupanddown.appspot.com",
+        messagingSenderId: "1062230732077",
+        appId: "1:1062230732077:web:16d26bd8fa2111752ff7a4",
+      };
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+var storage = firebase.storage();
+var storageRef = storage.ref();
+var picurl;
+
+var messagesRef = firebase.database().ref("images");
+
+var ImgUrl;
+var files = [];
+var reader = new FileReader();
+
+appfrm = document.querySelector("#appfrm");
+appfrm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    var name = document.getElementById('name').value
+    // var name = document.getElementById('photo').value
+    var uploadTask = firebase
+        .storage()
+        .ref("images/" + name + ".png")
+        .put(files[0])
+        uploadTask.snapshot.ref.getDownloadURL().then(function(url) {
+            console.log(url)
+            saveMessage(url)
+        });
+        function saveMessage(url) {
+        var newMessageRef = messagesRef.push();
+        newMessageRef.set({picurl: url});
+        window.location.reload;
+    }
+});
+//   ================================ Image Processing================================
+/**---------------------------------   selction ---------------------------------- **/
+document.getElementById("photo").onclick = (e) => {
+    var input = document.getElementById("photo");
+    input.onchange = (e) => {
+        files = e.target.files;
+        reader = new FileReader();
+        reader.onload = () => {
+            console.log("done");
+        };
+        reader.readAsDataURL(files[0]);
+    };
+    // input.click();
+};
+
+
+
+// ==========================Retrive
+readImages()
+function readImages() {
+    messagesRef.on("value", function(snapshot) {
+    snapshot.forEach(snap => {
+      const image = snap.val();
+
+      document.getElementById("ImageList").innerHTML += `
+        <div class="card mb-3" id="${image.picurl}" style="width: 25rem">
+          <div class="card-body">
+            <h3 class="card-title">${image.picurl}</h3>
+            <h6>Issue ID: ${image.picurl}</h6>
+            <p><span class="label label-info">URL: ${image.picurl}</span></p>
+            <img height="100" width="100" src="${image.picurl}"/>
+            <button onclick="setStatusClosed('${image.picurlid}')" id="closeButton" class="btn btn-warning mx-3">Close</button>
+            <button onclick="deleteIssue('${image.picurl}')" class="btn btn-danger mx-3">Delete</button>
+          </div>
+        </div>
+      `
+    })
+  }
+)}
+</script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Upload & Download</title>
+  </head>
+  <body>
+    <style>
+      img {
+        height: 200px;
+        width: 200px;
+        border: 2px solid black;
+      }
+    </style>
+    Image Name <input type="text" id="name" /> <br /><br />
+    <img id="myimg" /><label id="upProgress"></label><br /><br />
+    <input
+      id="photo"
+      class="form-control-file form-control"
+      type="file"
+      name="avatar-file"
+      accept="image/png, image/jpeg"
+    />
+
+    <button id="select">Select</button>
+    <button id="upload">Uplaod</button>
+    <button id="retrieve">Retrieve</button>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-storage.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyA_o9RtIdVApKbhm0SaDcX-I7P0SQYep6I",
+        authDomain: "imageupanddown.firebaseapp.com",
+        projectId: "imageupanddown",
+        storageBucket: "imageupanddown.appspot.com",
+        messagingSenderId: "1062230732077",
+        appId: "1:1062230732077:web:16d26bd8fa2111752ff7a4",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      var ImgNam, ImgUrl;
+      var files = [];
+      var reader = new FileReader();
+
+      //--------------   selection
+      document.getElementById("select").onclick = (e) => {
+        var input = document.createElement("input");
+        input.type = "file";
+        input.click();
+
+        input.onchange = (e) => {
+          files = e.target.files;
+          reader = new FileReader();
+          reader.onload = () => {
+            document.getElementById("myimg").src = reader.result;
+          };
+          reader.readAsDataURL(files[0]);
+        };
+        // input.click();
+      };
+      //--------------   Upload
+      document.getElementById("upload").onclick = () => {
+        ImgName = document.getElementById("name").value;
+        var uploadTask = firebase
+          .storage()
+          .ref("Images/" + ImgName + ".png")
+          .put(files[0]);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            console.log("Done");
+            // var progress =
+            //   (snapshot.byteTransferred / snapshot.totalBytes) * 100;
+            // document.getElementById("upProgress").innerHTML =
+            //   "Upload" + progress + "%";
+          },
+          (err) => {
+            alert("error in saving the image");
+          },
+          () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((url) => {
+              ImgUrl = url;
+
+              firebasedatabase()
+                .ref("Picture/" + ImgName)
+                .set({
+                  Name: ImgName,
+                  Link: ImgUrl,
+                });
+              alert("Image added successfully");
+            });
+          }
+        );
+      };
+    </script>
+  </body>
+</html>
