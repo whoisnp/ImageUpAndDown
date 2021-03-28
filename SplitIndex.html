@@ -19,16 +19,17 @@
             <div class="col-6">
                 <div class="row header" id="myDIV">
                     <form id="appfrm">
-                        <div class="col-6">
-                            Image Name <input type="text" id="name" /> <br /><br />
-                            <input id="photo" class="form-control-file form-control" type="file" name="avatar-file" accept="image/png, image/jpeg">
-                        </div>
+
+                        <lable for="photo">Image Name</lable><br>
+                        <input type="text" id="name" /> <br /><br />
+                        <input id="photo" class="form-control-file form-control" type="file" name="avatar-file" style="width:100%" accept="image/png, image/jpeg">
+
                         <!-- <div onclick="newElement()" class="addBtn content-center  col-6">Add</div> -->
-                        <div id="upload" class="addBtn content-center  col-6">
-                            <button class="btn" id="upload">
+                        <br><br>
+                        <button class="btn-warning" id="upload">
                                 Upload
                             </button>
-                        </div>
+
                     </form>
                 </div>
 
@@ -45,11 +46,11 @@
 
 
             <div class="col-6">
-                <div class="card mb-6" style="max-width: 540px;">
+                <div class="card mb-3" style="max-width: 540px;">
 
                     <!-- <img src="https://homepages.cae.wisc.edu/~ece533/images/airplane.png" alt="..."> -->
                     <section id="ImageList">
-        
+
                     </section>
 
 
@@ -65,42 +66,46 @@
         // Your web app's Firebase configuration
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         var firebaseConfig = {
-                apiKey: "AIzaSyA_o9RtIdVApKbhm0SaDcX-I7P0SQYep6I",
-                authDomain: "imageupanddown.firebaseapp.com",
-                projectId: "imageupanddown",
-                storageBucket: "imageupanddown.appspot.com",
-                messagingSenderId: "1062230732077",
-                appId: "1:1062230732077:web:16d26bd8fa2111752ff7a4",
-              };
+            apiKey: "AIzaSyA_o9RtIdVApKbhm0SaDcX-I7P0SQYep6I",
+            authDomain: "imageupanddown.firebaseapp.com",
+            projectId: "imageupanddown",
+            storageBucket: "imageupanddown.appspot.com",
+            messagingSenderId: "1062230732077",
+            appId: "1:1062230732077:web:16d26bd8fa2111752ff7a4",
+        };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        
+
         var storage = firebase.storage();
         var storageRef = storage.ref();
         var picurl;
-        
+
         var messagesRef = firebase.database().ref("images");
-        
+
         var ImgUrl;
         var files = [];
         var reader = new FileReader();
-        
+
         appfrm = document.querySelector("#appfrm");
         appfrm.addEventListener("submit", (e) => {
             e.preventDefault();
             var name = document.getElementById('name').value
-            // var name = document.getElementById('photo').value
+                // var name = document.getElementById('photo').value
             var uploadTask = firebase
                 .storage()
                 .ref("images/" + name + ".png")
                 .put(files[0])
-                uploadTask.snapshot.ref.getDownloadURL().then(function(url) {
-                    console.log(url)
-                    saveMessage(url,name)
-                });
-                function saveMessage(url,name) {
+            uploadTask.snapshot.ref.getDownloadURL().then(function(url) {
+                console.log(url)
+                saveMessage(url, name)
+            });
+
+            function saveMessage(url, name) {
                 var newMessageRef = messagesRef.push();
-                newMessageRef.set({picurl: url,name:name});
+                newMessageRef.set({
+                    picurl: url,
+                    name: name
+                });
                 // window.location.reload();
             }
         });
@@ -118,23 +123,25 @@
             };
             // input.click();
         };
-        
-        
-        
+
+
+
         // ==========================Retrive
         readImages()
         listImages()
+
         function listImages() {
             messagesRef.on("value", function(snapshot) {
-            snapshot.forEach(snap => {
-              const image = snap.val();
-        
-              document.getElementById("myUL").innerHTML += `
-              <li>${image.name} <button onclick="deleteIssue('${snap.key}')" class="btn btn-danger mx-3">Delete</button></li>
+                snapshot.forEach(snap => {
+                    const image = snap.val();
+
+                    document.getElementById("myUL").innerHTML += `
+              <ul><hr>${image.name} <button onclick="deleteIssue('${snap.key}')" class="btn btn-danger mx-3">Delete</button></li>
               `
+                })
             })
-          }
-        )}
+        }
+
         function deleteIssue(id) {
             messagesRef.child(`${id}`).remove();
             document.getElementById('myUL').innerHTML = "";
@@ -142,12 +149,13 @@
             document.getElementById('ImageList').innerHTML = "";
             readImages();
         }
+
         function readImages() {
             messagesRef.on("value", function(snapshot) {
-            snapshot.forEach(snap => {
-              const image = snap.val();
-        
-              document.getElementById("ImageList").innerHTML += `
+                snapshot.forEach(snap => {
+                    const image = snap.val();
+
+                    document.getElementById("ImageList").innerHTML += `
                 <div class="card mb-12" id="${image.picurl}">
                   <div class="card-body">
                     <h3 class="card-title">${image.name}</h3>
@@ -156,9 +164,9 @@
                   </div>
                 </div>
               `
+                })
             })
-          }
-        )}
+        }
         // // Create a "close" button and append it to each list item
         // var myNodelist = document.getElementsByTagName("LI");
         // var i;
