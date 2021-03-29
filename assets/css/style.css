@@ -6,8 +6,8 @@
     margin-top: 20px;
 }
 
-#list {
-    background-color: #369ef4;
+#imgname {
+    border: rgb(209, 207, 207) 2px solid;
 }
 
 
@@ -20,7 +20,6 @@ ul {
     cursor: pointer;
     position: relative;
     padding: 12px 8px 12px 0px;
-    background: #369ef4;
     width: 100%;
     /* make the list items unselectable */
     -webkit-user-select: none;
@@ -33,7 +32,7 @@ ul {
 
 /* Style the list items */
 
-ul li {
+ul ul {
     cursor: pointer;
     position: relative;
     padding: 12px 8px 12px 0px;
@@ -104,13 +103,17 @@ ul li.checked::before {
     color: white;
 }
 
+#name {
+    border: #888 1px solid;
+    margin-bottom: 10px;
+}
+
 
 /* Style the header */
 
 .header {
-    background-color: #369ef4;
     padding: 30px 40px;
-    color: white;
+    color: black;
     text-align: center;
 }
 

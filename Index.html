@@ -12,11 +12,93 @@
     <title>Document</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
+<style>
+    .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .main-circle {
+        width: 150px;
+        height: 150px;
+        border: 4px solid #00aeef;
+        border-top: 4px solid transparent;
+        border-right: 4px solid transparent;
+        position: relative;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: rotate 2s infinite;
+    }
+    
+    .main-circle:before {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        content: '';
+        border: 4px solid transparent;
+        border-right: 4px solid #00aeef;
+        transform: rotate(40deg);
+        border-radius: 50%;
+    }
+    
+    .green-circle {
+        animation: rotate 2s infinite .4s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 120px;
+        height: 120px;
+        border: 4px solid #00aeef;
+        border-top: 4px solid transparent;
+        border-right: 4px solid transparent;
+        transform: rotate(-20deg);
+        border-radius: 50%;
+        position: relative;
+    }
+    
+    .green-circle:before {
+        content: '';
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        position: absolute;
+        border: 4px solid transparent;
+        border-right: 4px solid #00aeef;
+        transform: rotate(60deg);
+    }
+    
+    .brown-circle {
+        animation: rotate 2s infinite .6s;
+        width: 80px;
+        height: 80px;
+        border: 4px solid #00aeef;
+        border-top: 4px solid transparent;
+        border-right: 4px solid transparent;
+        transform: rotate(-20deg);
+        border-radius: 50%;
+    }
+    
+    @keyframes rotate {
+        from {}
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 
-<body>
-    <div class="container">
+<body onload="myfun()">
+    <div class="wrapper" id="loader0">
+        <div class="main-circle">
+
+        </div>
+    </div>
+    <div class="container" id="profile">
         <div class="row">
-            <div class="col-6">
+            <div class="col-6" id="imgname">
                 <div class="row header" id="myDIV">
                     <form id="appfrm">
 
@@ -46,7 +128,7 @@
 
 
             <div class="col-6">
-                <div class="card mb-3" style="max-width: 540px;">
+                <div class="card" style="max-width: 540px;">
 
                     <!-- <img src="https://homepages.cae.wisc.edu/~ece533/images/airplane.png" alt="..."> -->
                     <section id="ImageList">
@@ -136,7 +218,7 @@
                     const image = snap.val();
 
                     document.getElementById("myUL").innerHTML += `
-              <ul><hr>${image.name} <button onclick="deleteIssue('${snap.key}')" class="btn btn-danger mx-3">Delete</button></li>
+                    <ul><div class="row"><div class="col-9"><b>${image.name}</b></div><div class="col-3" ><button onclick="deleteIssue('${snap.key}')" class="btn btn-danger mx-3">Delete</button></div></div></ul>
               `
                 })
             })
@@ -156,13 +238,21 @@
                     const image = snap.val();
 
                     document.getElementById("ImageList").innerHTML += `
-                <div class="card mb-12" id="${image.picurl}">
+                    <div class="row">
+                    <div class="col-12">
+                <div class="card mb-3" id="${image.picurl}">
                   <div class="card-body">
                     <h3 class="card-title">${image.name}</h3>
                     <img height="100" width="100" src="${image.picurl}"/>
                     <a href="${image.picurl}" download> <button class="btn-primary">Download</button></a>
                   </div>
                 </div>
+                </div>
+                
+               
+            </div>
+                
+                
               `
                 })
             })
@@ -217,6 +307,17 @@
         //         }
         //     }
         // }
+        function myfun() {
+            var myVar;
+            document.getElementById("profile").style.display = "none";
+
+            myVar = setTimeout(showPage, 3000);
+        }
+
+        function showPage() {
+            document.getElementById("loader0").style.display = "none";
+            document.getElementById("profile").style.display = "block";
+        }
     </script>
 
 
